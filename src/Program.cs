@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using SoundCloud;
-using System.Runtime.Serialization;
+using Youtube;
 
 namespace Music
 {
@@ -12,8 +12,8 @@ namespace Music
     {
         static void Main(string[] args)
         {
-            SoundCloud.SoundCloud soundcloud_client = new SoundCloud.SoundCloud("bb9515b11ad6d190d296583917f534fd");
-            soundcloud_client.resolveTrack("https://soundcloud.com/klefki/homestuck-the-carnival").play();
+            Youtube.Youtube youtube_client = new Youtube.Youtube();
+            youtube_client.resolveTrack("https://www.youtube.com/watch?v=3gxNW2Ulpwk").play();
             Console.ReadLine();
         }
     }
