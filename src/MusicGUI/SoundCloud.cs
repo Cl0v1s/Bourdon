@@ -88,6 +88,11 @@ namespace SoundCloud
         {
             return this.stream_url;
         }
+
+        public string getTitle()
+        {
+            return this.title;
+        }
     }
 
 

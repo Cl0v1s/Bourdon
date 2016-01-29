@@ -13,5 +13,6 @@ namespace Music
         void dispose();
         void stop();
         string getRemote();
+        string getTitle();
     }
 }

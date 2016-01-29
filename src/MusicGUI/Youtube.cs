@@ -22,6 +22,7 @@ namespace Youtube
         {
             if (link.Length <= 0)
                 return false;
+            Console.WriteLine("loading " + link);
             var response = WebRequest.Create(link).GetResponse();
             MemoryStream ms = new MemoryStream();
             Stream stream = response.GetResponseStream();
@@ -44,7 +45,7 @@ namespace Youtube
         {
             if (data != null)
             {
-
+                Console.WriteLine("Playing " + link);
                 outer = new WaveOut();
                 outer.Init(this.data);
                 outer.Play();
@@ -78,6 +79,11 @@ namespace Youtube
             return this.link;
         }
 
+        public string getTitle()
+        {
+            return this.getRemote();
+        }
+
     }
 
     class Response
@@ -89,8 +95,10 @@ namespace Youtube
     {
         public Track resolveTrack(string uri)
         {
+            Console.WriteLine("Retrieving " + uri);
             var response = WebRequest.Create("http://www.youtubeinmp3.com/fetch/?format=JSON&video=" + uri).GetResponse();
             StreamReader stream = new StreamReader(response.GetResponseStream());
+            Console.WriteLine("Retrieved " + uri);
             Track r = JsonConvert.DeserializeObject<Track>(stream.ReadToEnd());
             return r;
         }
