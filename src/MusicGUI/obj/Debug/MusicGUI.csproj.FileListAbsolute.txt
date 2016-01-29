@@ -1,0 +1,16 @@
+C:\Users\Clovis\Documents\developpement\c#\Music\src\MusicGUI\bin\Debug\MusicGUI.exe.config
+C:\Users\Clovis\Documents\developpement\c#\Music\src\MusicGUI\obj\Debug\MusicGUI.csprojResolveAssemblyReference.cache
+C:\Users\Clovis\Documents\developpement\c#\Music\src\MusicGUI\obj\Debug\MainWindow.baml
+C:\Users\Clovis\Documents\developpement\c#\Music\src\MusicGUI\obj\Debug\MainWindow.g.cs
+C:\Users\Clovis\Documents\developpement\c#\Music\src\MusicGUI\obj\Debug\App.g.cs
+C:\Users\Clovis\Documents\developpement\c#\Music\src\MusicGUI\obj\Debug\MusicGUI_MarkupCompile.cache
+C:\Users\Clovis\Documents\developpement\c#\Music\src\MusicGUI\obj\Debug\MusicGUI.g.resources
+C:\Users\Clovis\Documents\developpement\c#\Music\src\MusicGUI\obj\Debug\MusicGUI.Properties.Resources.resources
+C:\Users\Clovis\Documents\developpement\c#\Music\src\MusicGUI\obj\Debug\MusicGUI.csproj.GenerateResource.Cache
+C:\Users\Clovis\Documents\developpement\c#\Music\src\MusicGUI\bin\Debug\MusicGUI.exe
+C:\Users\Clovis\Documents\developpement\c#\Music\src\MusicGUI\bin\Debug\MusicGUI.pdb
+C:\Users\Clovis\Documents\developpement\c#\Music\src\MusicGUI\bin\Debug\NAudio.dll
+C:\Users\Clovis\Documents\developpement\c#\Music\src\MusicGUI\bin\Debug\NAudio.WindowsMediaFormat.dll
+C:\Users\Clovis\Documents\developpement\c#\Music\src\MusicGUI\bin\Debug\Newtonsoft.Json.dll
+C:\Users\Clovis\Documents\developpement\c#\Music\src\MusicGUI\obj\Debug\MusicGUI.exe
+C:\Users\Clovis\Documents\developpement\c#\Music\src\MusicGUI\obj\Debug\MusicGUI.pdb

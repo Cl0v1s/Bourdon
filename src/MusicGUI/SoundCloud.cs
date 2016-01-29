@@ -9,30 +9,28 @@ using System.Xml;
 using Newtonsoft.Json;
 using NAudio;
 using NAudio.Wave;
+using Music;
 
 namespace SoundCloud
 {
 
-    class Track
+    class Track: ITrack
     {
         IWavePlayer outer = null;
+        private WaveStream data = null;
 
         //Ressources JSON
         public string client_id { get; set; }
-        public int id { get; set; }
-        //TODO: insérer ici les valeurs non utilisées par le projet
         public string title { get; set; }
-        public string permalink_url { get; set; }
-        public string uri { get; set; }
         public int duration { get; set; }
         public bool streamable { get; set; }
         public string stream_url { get; set; }
 
-        public void play()
+        public bool load(bool play = false)
         {
-            if (outer == null && stream_url.Length > 0 && streamable == true && client_id != null && client_id != "")
+            if (stream_url.Length > 0 && streamable == true)
             {
-                var response = WebRequest.Create(stream_url+"?client_id="+client_id).GetResponse();
+                var response = WebRequest.Create(stream_url + "?client_id=" + client_id).GetResponse();
                 MemoryStream ms = new MemoryStream();
                 Stream stream = response.GetResponseStream();
                 byte[] buffer = new byte[65536]; // 64KB chunks
@@ -44,12 +42,25 @@ namespace SoundCloud
                     ms.Write(buffer, 0, read);
                     ms.Position = pos;
                 }
-                WaveStream blockAlignedStream = new BlockAlignReductionStream(WaveFormatConversionStream.CreatePcmStream(new Mp3FileReader(ms)));
-                outer = new WaveOut();
-                outer.Init(blockAlignedStream);
-                outer.Play();
-
+                this.data = new BlockAlignReductionStream(WaveFormatConversionStream.CreatePcmStream(new Mp3FileReader(ms)));
+                if (play)
+                    this.play();
+                return true;
             }
+            else
+                return false;
+        }
+
+        public void play()
+        {
+            if (this.data != null)
+            {
+                outer = new WaveOut();
+                outer.Init(this.data);
+                outer.Play();
+            }
+            else
+                this.load(true);
         }
 
         public void stop()
@@ -60,6 +71,22 @@ namespace SoundCloud
                 outer.Dispose();
                 outer = null;
             }
+        }
+
+        public void dispose()
+        {
+            if (outer != null)
+                throw new Exception("Le Track doit etre stoppé avant de dispose");
+            if (this.data != null)
+            {
+                this.data.Dispose();
+                this.data = null;
+            }
+        }
+
+        public string getRemote()
+        {
+            return this.stream_url;
         }
     }
 
