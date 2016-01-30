@@ -1,29 +1,24 @@
 ﻿<Window x:Class="MusicGUI.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Bourdon" Height="350" Width="525">
+        Title="Bourdon" Height="355" Width="680">
     <Grid>
-        <ListView HorizontalAlignment="Left" Height="299" Margin="359,10,0,0" VerticalAlignment="Top" Width="148">
-            <ListView.View>
-                <GridView>
-                    <GridViewColumn/>
-                </GridView>
-            </ListView.View>
+        <ListView Name="playlist_list" HorizontalAlignment="Left" Height="299" Margin="333,10,0,0" VerticalAlignment="Top" Width="320">
         </ListView>
-        <ListView HorizontalAlignment="Left" Height="100" Margin="10,209,0,0" VerticalAlignment="Top" Width="344">
-            <ListView.View>
-                <GridView>
-                    <GridViewColumn/>
-                </GridView>
-            </ListView.View>
-        </ListView>
-        <TextBox HorizontalAlignment="Left" Height="23" Margin="10,181,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="217"/>
-        <Label Content="Bannir un utilisateur:" Name="ban_name" HorizontalAlignment="Left" Margin="10,150,0,0" VerticalAlignment="Top" Width="119"/>
-        <Button Content="Bannir" Name="ban_button" HorizontalAlignment="Left" Margin="232,181,0,0" VerticalAlignment="Top" Width="75" Height="23" Click="ban_button_Click"/>
-        <Label Content="" Name="playing_link" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="344"/>
-        <Label Content="" Name="playing_user"  HorizontalAlignment="Left" Margin="10,41,0,0" VerticalAlignment="Top" Width="344"/>
-        <Button Content="Suivant" Name="next" HorizontalAlignment="Left" Margin="65,86,0,0" VerticalAlignment="Top" Width="75" Click="next_Click"/>
-        <Button Content="Bannir utilisateur" Name="playing_ban" HorizontalAlignment="Left" Margin="197,86,0,0" VerticalAlignment="Top" Width="110" Click="playing_ban_Click"/>
+        <Button Content="Bannir utilisateur" Name="playing_ban" HorizontalAlignment="Left" Margin="197,66,0,0" VerticalAlignment="Top" Width="131" Click="playing_ban_Click" Height="64"/>
+
+        <Button Content="Suivant" Name="next" HorizontalAlignment="Left" Margin="10,66,0,0" VerticalAlignment="Top" Width="182" Click="next_Click" Height="64"/>
+        <StackPanel HorizontalAlignment="Left" Height="51" Margin="10,10,0,0" VerticalAlignment="Top" Width="318" Background="#FF2B2B2B" >
+            <Label Content="Inconnu" Name="playing_link" HorizontalAlignment="Left" Margin="0,0,0,0" VerticalAlignment="Top" Width="318" Foreground="#8EFFFFFF"/>
+            <Label Content="Personne" Name="playing_user"  HorizontalAlignment="Left" Margin="0,0,0,0" VerticalAlignment="Top" Width="318" Background="#00000000" Foreground="#52FFFFFF"/>
+        </StackPanel>
+        <StackPanel HorizontalAlignment="Left" Height="174" Margin="10,135,0,0" VerticalAlignment="Top" Width="318" Background="#FF2B2B2B">
+            <Label Content="Bannir un utilisateur:"  HorizontalAlignment="Left" Margin="5,5,0,0" VerticalAlignment="Top" Width="133" Foreground="#8EFFFFFF"/>
+            <Button Content="Bannir" x:Name="ban_button" HorizontalAlignment="Left" Margin="220,5,0,0" VerticalAlignment="Top" Width="90" Height="23" Click="ban_button_Click"/>
+            <TextBox HorizontalAlignment="Left" Name="ban_name" Height="23" Margin="5,-22,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="210"/>
+            <ListView x:Name="ban_list" HorizontalAlignment="Left" Height="94" Margin="5,15,5,5" VerticalAlignment="Top" Width="318"/>
+        </StackPanel>
+
 
     </Grid>
 </Window>

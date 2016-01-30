@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Music
 {
-    interface ITrack
+    public interface ITrack
     {
         bool load(bool play = false);
         void play();

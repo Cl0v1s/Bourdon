@@ -1,0 +1,15 @@
+﻿<UserControl x:Class="MusicGUI.ListViewPlaylistItem"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="50" d:DesignWidth="300">
+    <Grid>
+        <Label Name="title" Content="" HorizontalAlignment="Left" VerticalAlignment="Top" Width="250" Margin="0,0,0,0" Height="25"/>
+        <Label Name="user" Content="" HorizontalAlignment="Left" VerticalAlignment="Top" Width="250" Margin="0,25,0,0" Height="25"/>
+        <Button Content="remove" HorizontalAlignment="Left" Margin="250,0,0,0" VerticalAlignment="Top" Width="50" Height="50" Click="remove_Click"/>
+
+
+    </Grid>
+</UserControl>

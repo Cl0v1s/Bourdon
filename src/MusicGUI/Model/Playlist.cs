@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Music
 {
-    class PlayListEntry
+    public class PlayListEntry
     {
         public ITrack track { get; set; }
         public string user { get; set; }
@@ -52,12 +52,12 @@ namespace Music
         }
     }
 
-    class Playlist
+    public class Playlist
     {
         public PlayListEntry playing{get;set;}
-        private List<PlayListEntry> to_play;
+        public List<PlayListEntry> to_play{get;set;}
         private List<PlayListEntry> played;
-        private List<string> banned;
+        public List<string> banned { get; set; }
 
         public Playlist()
         {
@@ -78,6 +78,13 @@ namespace Music
             this.to_play.Add(entry);
             Console.WriteLine("Added " + entry.getRemote());
             return true;
+        }
+        
+
+        public void remove(PlayListEntry entry)
+        {
+            this.to_play.Remove(entry);
+            this.played.Remove(entry);
         }
 
         public void next()
@@ -102,10 +109,8 @@ namespace Music
             this.playing.play();
             if (this.to_play.Count() <= 0)
                 return;
-            while (this.to_play[0].user == this.playing.user)
+            while (this.to_play.Count() >0 && this.to_play[0].user == this.playing.user)
                 this.to_play.RemoveAt(0);
-            if(this.to_play.Count() > 0)
-                this.to_play[0].load();
         }
 
         public void banCurrent()
@@ -113,19 +118,24 @@ namespace Music
             if (this.playing == null)
                 return;
             Console.WriteLine("Banned " + this.playing.user);
-            this.banned.Add(this.playing.user);
-            this.next();
+            if ((from entry in this.banned where entry == this.playing.user select entry).Count() <= 0)
+            {
+                this.banned.Add(this.playing.user);
+                this.next();
+            }
         }
 
         public void ban(string user)
         {
             IEnumerable<string> users = from entry in this.to_play where entry.user == user select entry.user;
             users.Concat(from entry in this.played where entry.user == user select entry.user);
-            if (users.Count() > 0 || this.playing.user == user)
+            if ((users.Count() > 0 || this.playing.user == user) && (from entry in this.banned where entry == this.playing.user select entry).Count() <= 0)
             {
                 this.banned.Add(user);
                 Console.WriteLine("Banned " + user);
             }
+            else
+                Console.WriteLine("Unable to ban " + user);
         }
 
         public void unban(string user)

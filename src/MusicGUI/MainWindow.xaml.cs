@@ -40,7 +40,9 @@ namespace MusicGUI
 
             //TODO: a supprimer après les tests
             playlist.add(new PlayListEntry(soundcloud_client.resolveTrack("https://soundcloud.com/chiptune/unreal-superhero-3"), "cloclo", false));
-            playlist.add(new PlayListEntry(youtube_client.resolveTrack("https://www.youtube.com/watch?v=9GkVhgIeGJQ"),"clacla", false));
+            playlist.add(new PlayListEntry(soundcloud_client.resolveTrack("https://soundcloud.com/chiptune/positive-waves"), "clocla", false));
+            playlist.add(new PlayListEntry(soundcloud_client.resolveTrack("https://soundcloud.com/prep-school-recordings/eion-hyper-active-original-mix"), "cloclu", false));
+
 
             this.playlist.next();
         }
@@ -50,6 +52,7 @@ namespace MusicGUI
             while (1 == 1)
             {
                 this.playlist.update();
+                //Mise à jour des informations sur le titre en cours
                 MethodInvoker inv = delegate
                 {
                     if (this.playlist.playing != null)
@@ -66,7 +69,36 @@ namespace MusicGUI
                         playing_user.Content = "Personne";
                 };
                 this.Dispatcher.Invoke(inv2);
+                //Mise à jour de la liste des bannis
+                MethodInvoker inv3 = delegate
+                {
+                    if (ban_list.Items.Count == this.playlist.banned.Count())
+                        return;
+                    ban_list.Items.Clear();
+                    foreach(string ban in this.playlist.banned)
+                    {
+                        Console.WriteLine("Adding " + ban + " to list of banned");
+                        ListViewBanItem item = new ListViewBanItem(ban,this.playlist);
+                        this.ban_list.Items.Add(item);
+                    }
+                    
+                };
+                this.Dispatcher.Invoke(inv3);
+                //Mise à jour de la liste des morceaux
+                MethodInvoker inv4 = delegate
+                {
+                    if (this.playlist_list.Items.Count == this.playlist.to_play.Count())
+                        return;
+                    this.playlist_list.Items.Clear();
+                    foreach (PlayListEntry entry in this.playlist.to_play)
+                    {
+                        Console.WriteLine("Adding " + entry.getTitle() + " to list of playlist");
+                        ListViewPlaylistItem item = new ListViewPlaylistItem(entry, this.playlist);
+                        this.playlist_list.Items.Add(item);
+                    }
 
+                };
+                this.Dispatcher.Invoke(inv4);
                 Thread.Sleep(200);
             }
         }
@@ -83,8 +115,9 @@ namespace MusicGUI
 
         private void ban_button_Click(object sender, RoutedEventArgs e)
         {
-            string user = (string)this.ban_name.Content;
+            string user = (string)this.ban_name.Text;
             this.playlist.ban(user);
+            this.ban_name.Text = "";
         }
     }
 }

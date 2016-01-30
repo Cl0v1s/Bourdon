@@ -1,0 +1,13 @@
+﻿<UserControl x:Class="MusicGUI.ListViewBanItem"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d"
+             d:DesignHeight="30" d:DesignWidth="300">
+    <Grid Margin="0,0,0,0">
+        <Label Content="" Name="user_name" HorizontalAlignment="Left" Height="30" Margin="0,0,0,0" VerticalAlignment="Top" Width="250"/>
+        <Button Content="UnBan" Name="user_unban" HorizontalAlignment="Left" Height="30" Margin="250,0,0,0" VerticalAlignment="Top" Width="50" Click="unban_Click"/>
+
+    </Grid>
+</UserControl>
