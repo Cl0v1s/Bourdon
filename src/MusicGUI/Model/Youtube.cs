@@ -12,16 +12,19 @@ using Music;
 
 namespace Youtube
 {
-    class Track : ITrack
+    public class Track : ITrack
     {
         public string link { get; set; }
+        public string base_url { get; set; }
         IWavePlayer outer = null;
         WaveStream data = null;
+        bool terminated = false;
 
         public bool load(bool play = false)
         {
             if (link.Length <= 0)
                 return false;
+            terminated = false;
             Console.WriteLine("loading " + link);
             var response = WebRequest.Create(link).GetResponse();
             MemoryStream ms = new MemoryStream();
@@ -45,13 +48,21 @@ namespace Youtube
         {
             if (data != null)
             {
+                terminated = false;
                 Console.WriteLine("Playing " + link);
                 outer = new WaveOut();
                 outer.Init(this.data);
                 outer.Play();
+                outer.PlaybackStopped += outer_PlaybackStopped;
             }
             else
                 this.load(true);
+        }
+
+        void outer_PlaybackStopped(object sender, StoppedEventArgs e)
+        {
+            terminated = true;
+            this.stop();
         }
 
         public void stop()
@@ -59,7 +70,8 @@ namespace Youtube
             if (outer != null)
             {
                 outer.Stop();
-                outer.Dispose();
+                if(outer != null)
+                    outer.Dispose();
                 outer = null;
             }
         }
@@ -84,6 +96,21 @@ namespace Youtube
             return this.getRemote();
         }
 
+        public string getUrl()
+        {
+            return base_url;
+        }
+
+        public bool isTerminated()
+        {
+            return terminated;
+        }
+
+        public void reset()
+        {
+            this.terminated = false;
+        }
+
     }
 
     class Response
@@ -91,7 +118,7 @@ namespace Youtube
         public string link {get;set;}
     }
 
-    class Youtube
+    public class Youtube
     {
         public Track resolveTrack(string uri)
         {
@@ -100,6 +127,7 @@ namespace Youtube
             StreamReader stream = new StreamReader(response.GetResponseStream());
             Console.WriteLine("Retrieved " + uri);
             Track r = JsonConvert.DeserializeObject<Track>(stream.ReadToEnd());
+            r.base_url = uri;
             return r;
         }
 

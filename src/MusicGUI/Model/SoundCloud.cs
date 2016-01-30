@@ -14,10 +14,12 @@ using Music;
 namespace SoundCloud
 {
 
-    class Track: ITrack
+    public class Track: ITrack
     {
         IWavePlayer outer = null;
         private WaveStream data = null;
+        public string base_url { get; set; }
+        private bool terminated = false;
 
         //Ressources JSON
         public string client_id { get; set; }
@@ -30,6 +32,7 @@ namespace SoundCloud
         {
             if (stream_url.Length > 0 && streamable == true)
             {
+                terminated = false;
                 var response = WebRequest.Create(stream_url + "?client_id=" + client_id).GetResponse();
                 MemoryStream ms = new MemoryStream();
                 Stream stream = response.GetResponseStream();
@@ -55,20 +58,30 @@ namespace SoundCloud
         {
             if (this.data != null)
             {
+                terminated = false;
                 outer = new WaveOut();
                 outer.Init(this.data);
                 outer.Play();
+                outer.PlaybackStopped += outer_PlaybackStopped;
             }
             else
                 this.load(true);
+        }
+
+        void outer_PlaybackStopped(object sender, StoppedEventArgs e)
+        {
+            terminated = true;
+            this.stop();
         }
 
         public void stop()
         {
             if (outer != null)
             {
+                terminated = true;
                 outer.Stop();
-                outer.Dispose();
+                if(outer != null)
+                    outer.Dispose();
                 outer = null;
             }
         }
@@ -93,10 +106,24 @@ namespace SoundCloud
         {
             return this.title;
         }
+
+        public string getUrl()
+        {
+            return base_url;
+        }
+        public bool isTerminated()
+        {
+            return this.terminated;
+        }
+
+        public void reset()
+        {
+            this.terminated = false;
+        }
     }
 
 
-    class SoundCloud
+    public class SoundCloud
     {
 
         private string _public_key;
@@ -115,6 +142,7 @@ namespace SoundCloud
             string data = stream.ReadToEnd();
             Track track = JsonConvert.DeserializeObject<Track>(data);
             track.client_id = this._public_key;
+            track.base_url = uri;
             return track;
 
         }

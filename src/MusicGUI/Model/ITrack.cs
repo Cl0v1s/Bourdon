@@ -12,7 +12,10 @@ namespace Music
         void play();
         void dispose();
         void stop();
+        string getUrl();
         string getRemote();
         string getTitle();
+        bool isTerminated();
+        void reset();
     }
 }
