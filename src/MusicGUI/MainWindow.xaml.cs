@@ -27,15 +27,25 @@ namespace MusicGUI
         private Playlist playlist;
         private SoundCloud.SoundCloud soundcloud_client;
         private Youtube.Youtube youtube_client;
+        private Twitter.Twitter twitter_client;
         private Thread updater;
+        private Thread retriever;
 
         public MainWindow()
         {
             InitializeComponent();
+
+            twitter_client = new Twitter.Twitter();
+
+
             playlist = new Playlist();
-            soundcloud_client = new SoundCloud.SoundCloud("bb9515b11ad6d190d296583917f534fd");
+            soundcloud_client = new SoundCloud.SoundCloud(APIKeyProvider.Soundcloud_ClientId);
             youtube_client = new Youtube.Youtube();
             playlist.load(youtube_client,soundcloud_client);
+
+            retriever = new Thread(new ThreadStart(this.retrieveEntries));
+            retriever.Start();
+
             updater = new Thread(new ThreadStart(this.update));
             updater.Start();
 
@@ -45,7 +55,16 @@ namespace MusicGUI
             playlist.add(new PlayListEntry(soundcloud_client.resolveTrack("https://soundcloud.com/prep-school-recordings/eion-hyper-active-original-mix"), "cloclu", false));
             */
 
-            this.playlist.next();
+            //this.playlist.next();
+        }
+
+        public void retrieveEntries()
+        {
+            while(1==1)
+            {
+                playlist.add(twitter_client.getPlaylistEntriesFromTweets(youtube_client, soundcloud_client));
+                Thread.Sleep(60 * 1000);
+            }
         }
 
         public void update()
@@ -124,6 +143,8 @@ namespace MusicGUI
         private void Window_Closed(object sender, EventArgs e)
         {
             this.playlist.save();
+            this.updater.Abort();
+            this.retriever.Abort();
         }
     }
 }

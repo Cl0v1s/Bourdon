@@ -135,6 +135,8 @@ namespace SoundCloud
 
         public Track resolveTrack(string uri)
         {
+            if (SoundCloud.isCompatible(uri) == false)
+                throw new Exception("Vous devez vérifier que le lien est compatible.");
             HttpWebRequest request;
             request = (HttpWebRequest)WebRequest.Create("http://api.soundcloud.com/resolve?url=" + uri + "&client_id=" + this._public_key);
             HttpWebResponse response = (HttpWebResponse)request.GetResponse();
@@ -145,6 +147,11 @@ namespace SoundCloud
             track.base_url = uri;
             return track;
 
+        }
+
+        public static bool isCompatible(string uri)
+        {
+            return uri.StartsWith("https://soundcloud.com") || uri.StartsWith("https://m.soundcloud.com");
         }
     }
 }

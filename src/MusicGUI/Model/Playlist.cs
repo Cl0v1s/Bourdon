@@ -133,6 +133,12 @@ namespace Music
             Console.WriteLine("Added " + entry.getRemote());
             return true;
         }
+
+        public void add(List<PlayListEntry> entries)
+        {
+            foreach (PlayListEntry e in entries)
+                this.add(e);
+        }
         
 
         public void remove(PlayListEntry entry)
@@ -217,9 +223,12 @@ namespace Music
         public void save()
         {
             //Déclaration de l'objet à sauvegarder
-            this.to_play.Insert(0,this.playing);
-            this.playing.stop();
-            this.playing.dispose();
+            if (this.playing != null)
+            {
+                this.to_play.Insert(0, this.playing);
+                this.playing.stop();
+                this.playing.dispose();
+            }
             this.playing = null;
             PlaylistMinified p = new PlaylistMinified();
             foreach(PlayListEntry e in this.to_play)

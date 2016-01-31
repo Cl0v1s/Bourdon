@@ -122,6 +122,9 @@ namespace Youtube
     {
         public Track resolveTrack(string uri)
         {
+            if(Youtube.isCompatible(uri) == false)
+                throw new Exception("Vous devez vérifier que le lien est compatible.");
+
             Console.WriteLine("Retrieving " + uri);
             var response = WebRequest.Create("http://www.youtubeinmp3.com/fetch/?format=JSON&video=" + uri).GetResponse();
             StreamReader stream = new StreamReader(response.GetResponseStream());
@@ -129,6 +132,11 @@ namespace Youtube
             Track r = JsonConvert.DeserializeObject<Track>(stream.ReadToEnd());
             r.base_url = uri;
             return r;
+        }
+
+        public static bool isCompatible(string uri)
+        {
+            return uri.StartsWith("https://m.youtube.com") || uri.StartsWith("https://www.youtube.com");
         }
 
     }
