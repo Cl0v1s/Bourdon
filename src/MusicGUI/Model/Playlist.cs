@@ -143,28 +143,35 @@ namespace Music
 
         public void next()
         {
-            Console.WriteLine("Next of "+this.to_play.Count());
-            if (this.playing != null)
+            //Déchargement de la chanson actuelle
+            if(this.playing != null)
             {
                 this.playing.stop();
                 this.playing.dispose();
-            }
-            if (this.to_play.Count() <= 0 && this.played.Count() > 0)
-                this.to_play = this.played;
-            else if (this.to_play.Count() <= 0)
-            {
-                this.playing = null;
-                return;
-            }
-            if(this.playing != null)
                 this.played.Add(this.playing);
-            this.playing = this.to_play[0];
-            this.to_play.RemoveAt(0);
-            this.playing.play();
+                this.playing = null;
+            }
+
+            //Si la liste à jouer est vide, on charge ce qui a deja été joué 
             if (this.to_play.Count() <= 0)
-                return;
-            while (this.to_play.Count() >0 && this.to_play[0].user == this.playing.user)
+            {
+                this.to_play = new List<PlayListEntry>(this.played);
+                this.played.Clear();
+            }
+
+            //SI la liste n'est pas vide
+            if (this.to_play.Count() > 0)
+            {
+                this.playing = this.to_play[0];
+                this.playing.load();
+                this.playing.play();
                 this.to_play.RemoveAt(0);
+            }
+
+     
+
+
+
         }
 
         public void banCurrent()
