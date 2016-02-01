@@ -28,6 +28,7 @@ namespace MusicGUI
         private SoundCloud.SoundCloud soundcloud_client;
         private Youtube.Youtube youtube_client;
         private Twitter.Twitter twitter_client;
+        private Google.Google google_client;
         private Thread updater;
         private Thread retriever;
 
@@ -36,7 +37,7 @@ namespace MusicGUI
             InitializeComponent();
 
             twitter_client = new Twitter.Twitter();
-
+            google_client = new Google.Google();
 
             playlist = new Playlist();
             soundcloud_client = new SoundCloud.SoundCloud(APIKeyProvider.Soundcloud_ClientId);
@@ -63,6 +64,7 @@ namespace MusicGUI
             while(1==1)
             {
                 playlist.add(twitter_client.getPlaylistEntriesFromTweets(youtube_client, soundcloud_client));
+                playlist.add(google_client.getPlaylistEntriesFromMail(youtube_client, soundcloud_client));
                 Thread.Sleep(60 * 1000);
             }
         }

@@ -19,6 +19,7 @@ namespace Youtube
         IWavePlayer outer = null;
         WaveStream data = null;
         bool terminated = false;
+        public string title { get; set; }
 
         public bool load(bool play = false)
         {
@@ -93,7 +94,7 @@ namespace Youtube
 
         public string getTitle()
         {
-            return this.getRemote();
+            return this.title;
         }
 
         public string getUrl()
@@ -128,7 +129,7 @@ namespace Youtube
             Console.WriteLine("Retrieving " + uri);
             var response = WebRequest.Create("http://www.youtubeinmp3.com/fetch/?format=JSON&video=" + uri).GetResponse();
             StreamReader stream = new StreamReader(response.GetResponseStream());
-            Console.WriteLine("Retrieved " + uri);
+            Console.WriteLine("Retrieved :" + uri+":");
             Track r = JsonConvert.DeserializeObject<Track>(stream.ReadToEnd());
             r.base_url = uri;
             return r;
