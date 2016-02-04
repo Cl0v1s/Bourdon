@@ -51,10 +51,10 @@ namespace MusicGUI
             updater.Start();
 
             //TODO: a supprimer après les tests
-           /* playlist.add(new PlayListEntry(soundcloud_client.resolveTrack("https://soundcloud.com/chiptune/unreal-superhero-3"), "cloclo", false));
+            playlist.add(new PlayListEntry(youtube_client.resolveTrack("https://www.youtube.com/dsjhdsqjsjd"), "cloclo", false));
             playlist.add(new PlayListEntry(soundcloud_client.resolveTrack("https://soundcloud.com/chiptune/positive-waves"), "clocla", false));
             playlist.add(new PlayListEntry(soundcloud_client.resolveTrack("https://soundcloud.com/prep-school-recordings/eion-hyper-active-original-mix"), "cloclu", false));
-            */
+            
 
             //this.playlist.next();
         }

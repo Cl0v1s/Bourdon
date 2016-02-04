@@ -8,9 +8,12 @@ using System.IO;
 
 namespace Music
 {
+    /// <summary>
+    /// Classe permettant de stocker un Json les informations sur la playlist
+    /// </summary>
     class PlaylistMinified
     {
-        public List<PlayListEntryMinified> to_play{get;set;}
+        public List<PlayListEntryMinified> to_play { get; set; }
         public List<PlayListEntryMinified> played { get; set; }
         public List<string> banned { get; set; }
 
@@ -21,10 +24,16 @@ namespace Music
             this.banned = new List<string>();
         }
 
+        /// <summary>
+        /// Transforme une mini playlist en réelle playlist
+        /// </summary>
+        /// <param name="youtube_client"></param>
+        /// <param name="soundcloud_client"></param>
+        /// <returns></returns>
         public Playlist expand(Youtube.Youtube youtube_client, SoundCloud.SoundCloud soundcloud_client)
         {
             Playlist p = new Playlist();
-            foreach(PlayListEntryMinified e in to_play)
+            foreach (PlayListEntryMinified e in to_play)
             {
                 p.to_play.Add(e.expand(youtube_client, soundcloud_client));
             }
@@ -37,7 +46,9 @@ namespace Music
         }
     }
 
-
+    /// <summary>
+    /// Représente une entrée de playlist minifiée pour la sauvegarde en JSON
+    /// </summary>
     class PlayListEntryMinified
     {
         public string user { get; set; }
@@ -49,6 +60,12 @@ namespace Music
             this.url = url;
         }
 
+        /// <summary>
+        /// Convertit l'entrée de playlist minifiée en réelle entrée de playlist
+        /// </summary>
+        /// <param name="youtube_client"></param>
+        /// <param name="soundcloud_client"></param>
+        /// <returns></returns>
         public PlayListEntry expand(Youtube.Youtube youtube_client, SoundCloud.SoundCloud soundcloud_client)
         {
             PlayListEntry p = null;
@@ -60,6 +77,9 @@ namespace Music
         }
     }
 
+    /// <summary>
+    /// Reprénte un entrée de playlist
+    /// </summary>
     public class PlayListEntry
     {
         public ITrack track { get; set; }
@@ -97,6 +117,8 @@ namespace Music
 
         public string getRemote()
         {
+            if (this.track == null)
+                return "Inconnu";
             return this.track.getRemote();
         }
 
@@ -108,8 +130,8 @@ namespace Music
 
     public class Playlist
     {
-        public PlayListEntry playing{get;set;}
-        public List<PlayListEntry> to_play{get;set;}
+        public PlayListEntry playing { get; set; }
+        public List<PlayListEntry> to_play { get; set; }
         public List<PlayListEntry> played;
         public List<string> banned { get; set; }
 
@@ -120,9 +142,18 @@ namespace Music
             this.banned = new List<string>();
         }
 
+        /// <summary>
+        /// Ajoute le morceau à la playlist
+        /// </summary>
+        /// <param name="entry">L'entrée de playlist à ajouter</param>
+        /// <returns>Vrai si ajouté, Faux sinon</returns>
         public bool add(PlayListEntry entry)
         {
             Console.WriteLine("Adding " + entry.getRemote());
+            if (entry == null)
+                return false;
+            if (entry.track == null)
+                return false;
             IEnumerable<string> is_banned = from ban in this.banned where ban == entry.user select ban;
             if (is_banned.Count() > 0)
                 return false;
@@ -134,23 +165,33 @@ namespace Music
             return true;
         }
 
+        /// <summary>
+        /// Ajoute une liste d'entrées de playlist à la playlist
+        /// </summary>
+        /// <param name="entries">Liste d'entrées de playlistes à ajouter</param>
         public void add(List<PlayListEntry> entries)
         {
             foreach (PlayListEntry e in entries)
                 this.add(e);
         }
-        
 
+        /// <summary>
+        /// Supprime une entrée de playliste
+        /// </summary>
+        /// <param name="entry">Entrée à supprimer</param>
         public void remove(PlayListEntry entry)
         {
             this.to_play.Remove(entry);
             this.played.Remove(entry);
         }
 
+        /// <summary>
+        /// Passe à l'entrée suivante
+        /// </summary>
         public void next()
         {
             //Déchargement de la chanson actuelle
-            if(this.playing != null)
+            if (this.playing != null)
             {
                 this.playing.stop();
                 this.playing.dispose();
@@ -173,13 +214,11 @@ namespace Music
                 this.playing.play();
                 this.to_play.RemoveAt(0);
             }
-
-     
-
-
-
         }
 
+        /// <summary>
+        /// Banni l'utilisateur ayant proposé le morceau courant
+        /// </summary>
         public void banCurrent()
         {
             if (this.playing == null)
@@ -192,6 +231,10 @@ namespace Music
             }
         }
 
+        /// <summary>
+        /// Banni l'utilisateur dont le nom est passé en paramètre
+        /// </summary>
+        /// <param name="user">Utitlisateur à bannir</param>
         public void ban(string user)
         {
             IEnumerable<string> users = from entry in this.to_play where entry.user == user select entry.user;
@@ -205,12 +248,19 @@ namespace Music
                 Console.WriteLine("Unable to ban " + user);
         }
 
+        /// <summary>
+        /// Déban l'utilisateur 
+        /// </summary>
+        /// <param name="user">Utilisateur à débannir</param>
         public void unban(string user)
         {
             this.banned.Remove(user);
             Console.WriteLine("UnBanned " + user);
         }
 
+        /// <summary>
+        /// Met à jour la playliste, en vérifiant si le morceau courant est terminé
+        /// </summary>
         public void update()
         {
             if (this.playing != null && this.playing.track.isTerminated())
@@ -220,6 +270,9 @@ namespace Music
             }
         }
 
+        /// <summary>
+        /// Sauvegarde la playlist au format JSON
+        /// </summary>
         public void save()
         {
             //Déclaration de l'objet à sauvegarder
@@ -231,7 +284,7 @@ namespace Music
             }
             this.playing = null;
             PlaylistMinified p = new PlaylistMinified();
-            foreach(PlayListEntry e in this.to_play)
+            foreach (PlayListEntry e in this.to_play)
             {
                 p.to_play.Add(new PlayListEntryMinified(e.user, e.track.getUrl()));
             }
@@ -248,6 +301,11 @@ namespace Music
             stream.Close();
         }
 
+        /// <summary>
+        /// Charge la playlist depuis un format JSON
+        /// </summary>
+        /// <param name="youtube_client">Client youtube</param>
+        /// <param name="soundcloud_client">Client Soundcloud</param>
         public void load(Youtube.Youtube youtube_client, SoundCloud.SoundCloud soundcloud_client)
         {
             if (File.Exists("save.json") == false)

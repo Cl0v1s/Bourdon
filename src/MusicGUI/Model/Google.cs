@@ -16,9 +16,19 @@ using System.Text.RegularExpressions;
 namespace Google
 {
 
+    /// <summary>
+    /// Entité représentant un email google simplifié
+    /// </summary>
     class Gmail
     {
+        /// <summary>
+        /// Sender
+        /// </summary>
         public string user;
+
+        /// <summary>
+        /// Lien contenu dans le mail
+        /// </summary>
         public string content;
 
         public Gmail(string user, string content)
@@ -32,19 +42,20 @@ namespace Google
     class Google
     {
 
+        /// <summary>
+        /// Client de l'apI google permettant de se connecter à la boite Gmail
+        /// </summary>
         private GmailService client;
-        private List<Gmail> checke;
 
         public Google()
         {
-            this.checke = new List<Gmail>();
             UserCredential credential = GoogleWebAuthorizationBroker.AuthorizeAsync(
                     new ClientSecrets
                     {
                         ClientId = Music.APIKeyProvider.Google_ClientId,
                         ClientSecret = Music.APIKeyProvider.Google_Secret
                     },
-                    new string[] { GmailService.Scope.MailGoogleCom},
+                    new string[] { GmailService.Scope.MailGoogleCom },
                     "user",
                     CancellationToken.None,
                     new FileDataStore("./", true)).Result;
@@ -56,6 +67,10 @@ namespace Google
 
         }
 
+        /// <summary>
+        /// Récupère les mails depuis la boite Gmail et les ordonne sous forme de liste
+        /// </summary>
+        /// <returns></returns>
         public List<Gmail> getMessages()
         {
             List<Gmail> res = new List<Gmail>();
@@ -67,13 +82,13 @@ namespace Google
             }
             List<Message> response = request.ToList();
             Console.WriteLine("Listing messages");
-            foreach(Message mes in response)
+            foreach (Message mes in response)
             {
                 UsersResource.MessagesResource.GetRequest requ = this.client.Users.Messages.Get("me", mes.Id);
                 requ.Format = UsersResource.MessagesResource.GetRequest.FormatEnum.Raw;
                 Message r = requ.Execute();
                 string correct = Encoding.UTF8.GetString(Convert.FromBase64String(r.Raw.Replace('-', '+').Replace('_', '/')));
-                string user = Regex.Split(correct,"Return-Path: <")[1].Split('>')[0];
+                string user = Regex.Split(correct, "Return-Path: <")[1].Split('>')[0];
                 string content = Regex.Split(Regex.Split(correct, "Content-Type: text/plain;.*\n")[1], "--")[0].Trim();
                 if (content[content.Length - 1] == '=')
                     content = content.Remove(content.Length - 1, 1);
@@ -86,35 +101,27 @@ namespace Google
             return res;
         }
 
+        /// <summary>
+        /// Transforme les messages présents dans la boite mail en entrées de playlist pour la lecture
+        /// </summary>
+        /// <param name="youtube_client">Instance du client youtube permettant d'interragir avec le service de vidéo en ligne</param>
+        /// <param name="soundcloud_client">Instance du client soundcloud permettant d'interragir avec le service de son en ligne</param>
+        /// <returns></returns>
         public List<Music.PlayListEntry> getPlaylistEntriesFromMail(Youtube.Youtube youtube_client, SoundCloud.SoundCloud soundcloud_client)
         {
             List<Music.PlayListEntry> res = new List<Music.PlayListEntry>();
             List<Gmail> msg = this.getMessages();
-            foreach(Gmail g in msg)
+            foreach (Gmail g in msg)
             {
-                bool f = false;
-                foreach(Gmail gi in checke)
-                {
-                    if(g.user == gi.user && g.content == gi.content)
-                    {
-                        f = true;
-                        break;
-                    }
-                }
-                if (f == true)
-                    continue;
-                else
-                    this.checke.Add(g);
                 Music.ITrack track = null;
                 if (Youtube.Youtube.isCompatible(g.content))
                     track = youtube_client.resolveTrack(g.content);
                 else if (SoundCloud.SoundCloud.isCompatible(g.content))
                     track = soundcloud_client.resolveTrack(g.content);
-                if(track != null)
+                if (track != null)
                 {
                     res.Add(new Music.PlayListEntry(track, g.user, false));
                 }
-
             }
             return res;
         }

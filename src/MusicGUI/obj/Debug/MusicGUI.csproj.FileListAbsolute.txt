@@ -1,5 +1,4 @@
 C:\Users\Clovis\Documents\developpement\c#\Music\src\MusicGUI\bin\Debug\MusicGUI.exe.config
-C:\Users\Clovis\Documents\developpement\c#\Music\src\MusicGUI\obj\Debug\MusicGUI.csprojResolveAssemblyReference.cache
 C:\Users\Clovis\Documents\developpement\c#\Music\src\MusicGUI\obj\Debug\MusicGUI_MarkupCompile.cache
 C:\Users\Clovis\Documents\developpement\c#\Music\src\MusicGUI\obj\Debug\MusicGUI.g.resources
 C:\Users\Clovis\Documents\developpement\c#\Music\src\MusicGUI\obj\Debug\MusicGUI.Properties.Resources.resources
@@ -56,3 +55,8 @@ C:\Users\Clovis\Documents\developpement\c#\Music\src\MusicGUI\bin\Debug\Google.A
 C:\Users\Clovis\Documents\developpement\c#\Music\src\MusicGUI\bin\Debug\Google.Apis.Gmail.v1.xml
 C:\Users\Clovis\Documents\developpement\c#\Music\src\MusicGUI\bin\Debug\Google.Apis.PlatformServices.pdb
 C:\Users\Clovis\Documents\developpement\c#\Music\src\MusicGUI\bin\Debug\Google.Apis.PlatformServices.xml
+C:\Users\Clovis\Documents\developpement\c#\Music\src\MusicGUI\bin\Debug\MusicGUI.exe.manifest
+C:\Users\Clovis\Documents\developpement\c#\Music\src\MusicGUI\bin\Debug\MusicGUI.application
+C:\Users\Clovis\Documents\developpement\c#\Music\src\MusicGUI\obj\Debug\MusicGUI.csprojResolveAssemblyReference.cache
+C:\Users\Clovis\Documents\developpement\c#\Music\src\MusicGUI\obj\Debug\MusicGUI.exe.manifest
+C:\Users\Clovis\Documents\developpement\c#\Music\src\MusicGUI\obj\Debug\MusicGUI.application

@@ -14,6 +14,10 @@ namespace Twitter
 {
     class Twitter
     {
+
+        /// <summary>
+        /// Date de la dernière mise à jour
+        /// </summary>
         private DateTime last_update;
 
         public Twitter()
@@ -22,6 +26,10 @@ namespace Twitter
             last_update = DateTime.Now.AddHours(-1);
         }
 
+        /// <summary>
+        /// Récupère la liste des mentions 
+        /// </summary>
+        /// <returns></returns>
         public IEnumerable<IMention> getTweets()
         {
             var tweets = Timeline.GetMentionsTimeline();
@@ -33,6 +41,13 @@ namespace Twitter
             return tweets;
         }
 
+
+        /// <summary>
+        /// transforme les tweets en liste d'entrées de playlist
+        /// </summary>
+        /// <param name="youtube_client"></param>
+        /// <param name="soundcloud_client"></param>
+        /// <returns></returns>
         public List<Music.PlayListEntry> getPlaylistEntriesFromTweets(Youtube.Youtube youtube_client, SoundCloud.SoundCloud soundcloud_client)
         {
             List<Music.PlayListEntry> res = new List<PlayListEntry>();

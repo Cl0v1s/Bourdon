@@ -6,6 +6,10 @@ using System.Threading.Tasks;
 
 namespace Music
 {
+
+    /// <summary>
+    /// Interface globale représentant un morceau
+    /// </summary>
     public interface ITrack
     {
         bool load(bool play = false);

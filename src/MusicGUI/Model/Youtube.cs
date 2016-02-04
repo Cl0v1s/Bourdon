@@ -12,6 +12,10 @@ using Music;
 
 namespace Youtube
 {
+
+    /// <summary>
+    /// Instance de morceau propre à Youtube
+    /// </summary>
     public class Track : ITrack
     {
         public string link { get; set; }
@@ -20,7 +24,13 @@ namespace Youtube
         WaveStream data = null;
         bool terminated = false;
         public string title { get; set; }
+        public DateTime lastPlayed = DateTime.Now;
 
+        /// <summary>
+        /// Charge le morceau en mémoire
+        /// </summary>
+        /// <param name="play">Si vrai, joue le morceau en fin de chargement</param>
+        /// <returns></returns>
         public bool load(bool play = false)
         {
             if (link.Length <= 0)
@@ -40,14 +50,18 @@ namespace Youtube
                 ms.Position = pos;
             }
             this.data = new BlockAlignReductionStream(WaveFormatConversionStream.CreatePcmStream(new Mp3FileReader(ms)));
+            this.lastPlayed = DateTime.Now;
             if (play)
                 this.play();
             return true;
         }
 
+        /// <summary>
+        /// Joue le morceau
+        /// </summary>
         public void play()
         {
-            if (data != null)
+            if (data != null || this.lastPlayed.AddMinutes(13) < DateTime.Now)
             {
                 terminated = false;
                 Console.WriteLine("Playing " + link);
@@ -60,12 +74,20 @@ namespace Youtube
                 this.load(true);
         }
 
+        /// <summary>
+        /// Appelé lorsque le morceau est terminé
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         void outer_PlaybackStopped(object sender, StoppedEventArgs e)
         {
             terminated = true;
             this.stop();
         }
 
+        /// <summary>
+        /// Arrete la leture du morceau
+        /// </summary>
         public void stop()
         {
             if (outer != null)
@@ -77,6 +99,9 @@ namespace Youtube
             }
         }
 
+        /// <summary>
+        /// Libère la mémoire occupée par le stream du morceau
+        /// </summary>
         public void dispose()
         {
             if (outer != null)
@@ -87,26 +112,47 @@ namespace Youtube
             this.data = null;
         }
 
+
+        /// <summary>
+        /// Récupère l'URL de stream
+        /// </summary>
+        /// <returns></returns>
         public string getRemote()
         {
             return this.link;
         }
 
+        /// <summary>
+        /// Récupère le titre du morceau
+        /// </summary>
+        /// <returns></returns>
         public string getTitle()
         {
             return this.title;
         }
 
+
+        /// <summary>
+        /// écupère l'URL de base du morceau
+        /// </summary>
+        /// <returns></returns>
         public string getUrl()
         {
             return base_url;
         }
 
+        /// <summary>
+        /// Retourne si le morceau est fini ou non
+        /// </summary>
+        /// <returns></returns>
         public bool isTerminated()
         {
             return terminated;
         }
 
+        /// <summary>
+        /// Remet les stats du morceau à l'orignal
+        /// </summary>
         public void reset()
         {
             this.terminated = false;
@@ -121,20 +167,35 @@ namespace Youtube
 
     public class Youtube
     {
+
+        /// <summary>
+        /// Convertit un lien youtube en Morceau jouable 
+        /// </summary>
+        /// <param name="uri"></param>
+        /// <returns></returns>
         public Track resolveTrack(string uri)
         {
             if(Youtube.isCompatible(uri) == false)
                 throw new Exception("Vous devez vérifier que le lien est compatible.");
 
             Console.WriteLine("Retrieving " + uri);
-            var response = WebRequest.Create("http://www.youtubeinmp3.com/fetch/?format=JSON&video=" + uri).GetResponse();
+            HttpWebResponse response = null;
+            response = (HttpWebResponse)WebRequest.Create("http://www.youtubeinmp3.com/fetch/?format=JSON&video=" + uri).GetResponse();
             StreamReader stream = new StreamReader(response.GetResponseStream());
             Console.WriteLine("Retrieved :" + uri+":");
-            Track r = JsonConvert.DeserializeObject<Track>(stream.ReadToEnd());
+            string data = stream.ReadToEnd();
+            if (data == "{\"error\":\"no video\"}")
+                return null;
+            Track r = JsonConvert.DeserializeObject<Track>(data);
             r.base_url = uri;
             return r;
         }
 
+        /// <summary>
+        /// Retourne si le lien pass en paramètre est bien un lien youtube
+        /// </summary>
+        /// <param name="uri"></param>
+        /// <returns></returns>
         public static bool isCompatible(string uri)
         {
             return uri.StartsWith("https://m.youtube.com") || uri.StartsWith("https://www.youtube.com");

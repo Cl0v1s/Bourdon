@@ -14,6 +14,9 @@ using Music;
 namespace SoundCloud
 {
 
+    /// <summary>
+    /// Instance de track spécial soundcloud
+    /// </summary>
     public class Track: ITrack
     {
         IWavePlayer outer = null;
@@ -28,6 +31,11 @@ namespace SoundCloud
         public bool streamable { get; set; }
         public string stream_url { get; set; }
 
+        /// <summary>
+        /// Charge le flux du morceau en mémoire
+        /// </summary>
+        /// <param name="play">si play est vrai, joue le morceau à la fin du chargement</param>
+        /// <returns>faux si échec du chargement</returns>
         public bool load(bool play = false)
         {
             if (stream_url.Length > 0 && streamable == true)
@@ -54,6 +62,9 @@ namespace SoundCloud
                 return false;
         }
 
+        /// <summary>
+        /// Joue le morceau
+        /// </summary>
         public void play()
         {
             if (this.data != null)
@@ -68,12 +79,20 @@ namespace SoundCloud
                 this.load(true);
         }
 
+        /// <summary>
+        /// evenement triggered à la fin de la lecture du morceau courant
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         void outer_PlaybackStopped(object sender, StoppedEventArgs e)
         {
             terminated = true;
             this.stop();
         }
 
+        /// <summary>
+        /// Arrete de jouer le morceau courant
+        /// </summary>
         public void stop()
         {
             if (outer != null)
@@ -86,6 +105,9 @@ namespace SoundCloud
             }
         }
 
+        /// <summary>
+        /// Décharge la mémoire du morceau courant
+        /// </summary>
         public void dispose()
         {
             if (outer != null)
@@ -97,25 +119,45 @@ namespace SoundCloud
             }
         }
 
+        /// <summary>
+        /// Retourne l'url de stream
+        /// </summary>
+        /// <returns></returns>
         public string getRemote()
         {
             return this.stream_url;
         }
 
+        /// <summary>
+        /// Retourne le titre du morceau
+        /// </summary>
+        /// <returns></returns>
         public string getTitle()
         {
             return this.title;
         }
 
+        /// <summary>
+        /// Retourne l'url de base de ce morceau (telle qu'elle a été proposée)
+        /// </summary>
+        /// <returns></returns>
         public string getUrl()
         {
             return base_url;
         }
+
+        /// <summary>
+        /// Retourne si le morceau est terminé ou non
+        /// </summary>
+        /// <returns></returns>
         public bool isTerminated()
         {
             return this.terminated;
         }
 
+        /// <summary>
+        /// Remet les stats du morceau à leur état original
+        /// </summary>
         public void reset()
         {
             this.terminated = false;
@@ -126,6 +168,9 @@ namespace SoundCloud
     public class SoundCloud
     {
 
+        /// <summary>
+        /// Clef public permettant de se connecter à l'API
+        /// </summary>
         private string _public_key;
 
         public SoundCloud(string public_key)
@@ -133,13 +178,26 @@ namespace SoundCloud
             this._public_key = public_key;
         }
 
+        /// <summary>
+        /// Retourne une instance de morceau correspondant au lien demandé
+        /// </summary>
+        /// <param name="uri">Len à récupérer</param>
+        /// <returns></returns>
         public Track resolveTrack(string uri)
         {
             if (SoundCloud.isCompatible(uri) == false)
                 throw new Exception("Vous devez vérifier que le lien est compatible.");
             HttpWebRequest request;
             request = (HttpWebRequest)WebRequest.Create("http://api.soundcloud.com/resolve?url=" + uri + "&client_id=" + this._public_key);
-            HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+            HttpWebResponse response = null;
+            try
+            {
+                response = (HttpWebResponse)request.GetResponse();
+            }
+            catch(WebException e)
+            {
+                return null;
+            }
             StreamReader stream = new StreamReader(response.GetResponseStream());
             string data = stream.ReadToEnd();
             Track track = JsonConvert.DeserializeObject<Track>(data);
@@ -149,6 +207,11 @@ namespace SoundCloud
 
         }
 
+        /// <summary>
+        /// Retourne vrai si le lien passé en paramètre est un lien soundcloud
+        /// </summary>
+        /// <param name="uri"></param>
+        /// <returns></returns>
         public static bool isCompatible(string uri)
         {
             return uri.StartsWith("https://soundcloud.com") || uri.StartsWith("https://m.soundcloud.com");
