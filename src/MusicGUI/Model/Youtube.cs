@@ -198,7 +198,7 @@ namespace Youtube
         /// <returns></returns>
         public static bool isCompatible(string uri)
         {
-            return uri.StartsWith("https://m.youtube.com") || uri.StartsWith("https://www.youtube.com");
+            return uri.StartsWith("https://m.youtube.com") || uri.StartsWith("https://www.youtube.com") || uri.StartsWith("https://youtu.be");
         }
 
     }

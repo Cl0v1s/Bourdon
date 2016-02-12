@@ -134,12 +134,14 @@ namespace Music
         public List<PlayListEntry> to_play { get; set; }
         public List<PlayListEntry> played;
         public List<string> banned { get; set; }
+        public DateTime lastSwitch;
 
         public Playlist()
         {
             this.to_play = new List<PlayListEntry>();
             this.played = new List<PlayListEntry>();
             this.banned = new List<string>();
+            this.lastSwitch = DateTime.Now;
         }
 
         /// <summary>
@@ -190,6 +192,7 @@ namespace Music
         /// </summary>
         public void next()
         {
+            this.lastSwitch = DateTime.Now;
             //Déchargement de la chanson actuelle
             if (this.playing != null)
             {
@@ -239,7 +242,7 @@ namespace Music
         {
             IEnumerable<string> users = from entry in this.to_play where entry.user == user select entry.user;
             users.Concat(from entry in this.played where entry.user == user select entry.user);
-            if ((users.Count() > 0 || this.playing.user == user) && (from entry in this.banned where entry == this.playing.user select entry).Count() <= 0)
+            if ((users.Count() > 0 || (this.playing != null && this.playing.user == user)) && this.playing != null && (from entry in this.banned where entry == this.playing.user select entry).Count() <= 0)
             {
                 this.banned.Add(user);
                 Console.WriteLine("Banned " + user);
@@ -263,7 +266,7 @@ namespace Music
         /// </summary>
         public void update()
         {
-            if (this.playing != null && this.playing.track.isTerminated())
+            if (this.playing != null && (this.playing.track.isTerminated() || this.lastSwitch.AddMinutes(5) > DateTime.Now ))
             {
                 this.playing.track.reset();
                 this.next();

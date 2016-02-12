@@ -51,7 +51,16 @@ namespace Twitter
         public List<Music.PlayListEntry> getPlaylistEntriesFromTweets(Youtube.Youtube youtube_client, SoundCloud.SoundCloud soundcloud_client)
         {
             List<Music.PlayListEntry> res = new List<PlayListEntry>();
-            List<IMention> tweets = (from t in this.getTweets().ToList() where t.CreatedAt >= this.last_update && t.Urls.Count() > 0 select t).ToList();
+            List<IMention> tweets;
+            try
+            {
+                tweets = (from t in this.getTweets().ToList() where t.CreatedAt >= this.last_update && t.Urls.Count() > 0 select t).ToList();
+            }
+            catch(NullReferenceException e)
+            {
+                Console.WriteLine("Une erreur est survenue lors de la récupération des tweets.");
+                return res;
+            }
             Console.WriteLine("analizing tweets");
             foreach(IMention t in tweets)
             {
