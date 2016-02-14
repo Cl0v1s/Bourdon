@@ -12,4 +12,4 @@ Il est également possible d'entrer en contact avec le bot sur Gmail. Le princip
 
 ## Crédits
 
-Sur une idée original de [@DaiumYt](https://twitter.com/DaiumYt) et de de [@Tiba_ka](https://twitter.com/Tiba_ka)
+Sur une idée originale de [@DaiumYt](https://twitter.com/DaiumYt) et de de [@Tiba_ka](https://twitter.com/Tiba_ka)
